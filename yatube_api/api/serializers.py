@@ -1,6 +1,5 @@
+from posts.models import Comment, Follow, Group, Post, User
 from rest_framework import serializers, validators
-
-from posts.models import Post, Group, Comment, Follow
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -36,6 +35,13 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class FollowSerializer(serializers.ModelSerializer):
+    user = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field='username',
+        default=serializers.CurrentUserDefault())
+    author = serializers.SlugRelatedField(slug_field='username',
+                                          queryset=User.objects.all())
+
     class Meta:
-        model = Follow
         fields = '__all__'
+        model = Follow
